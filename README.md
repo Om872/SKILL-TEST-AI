@@ -1,4 +1,4 @@
-# Skill Test AI v2
+# Skill Test AI 
 
 A full-stack, AI-powered web application that allows users to take skill-based tests (like Python, Java, Data Science), get AI-generated questions, and receive detailed performance analysis.
 
