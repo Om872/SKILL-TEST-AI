@@ -301,18 +301,35 @@ def user_profile(current_user):
 @app.route('/api/leaderboard', methods=['GET'])
 def leaderboard():
     tests = db.session.query(Test, User).join(User, Test.user_id == User.id).all()
-    results = []
+    user_best = {}
+    
     for t, u in tests:
         percentage = round((t.score / t.total_questions) * 100, 2) if t.total_questions > 0 else 0
-        results.append({
-            'user': u.name,
-            'skill': t.skill,
-            'difficulty': t.difficulty,
-            'score': t.score,
-            'total_questions': t.total_questions,
-            'percentage': percentage,
-            'date': t.date.isoformat()
-        })
+        
+        # Track only the best score for each user
+        if u.id not in user_best or percentage > user_best[u.id]['percentage']:
+            user_best[u.id] = {
+                'user': u.name,
+                'skill': t.skill,
+                'difficulty': t.difficulty,
+                'score': t.score,
+                'total_questions': t.total_questions,
+                'percentage': percentage,
+                'date': t.date.isoformat()
+            }
+        # Tie breaker: same percentage but higher score (e.g., 10/10 vs 5/5)
+        elif percentage == user_best[u.id]['percentage'] and t.score > user_best[u.id]['score']:
+            user_best[u.id] = {
+                'user': u.name,
+                'skill': t.skill,
+                'difficulty': t.difficulty,
+                'score': t.score,
+                'total_questions': t.total_questions,
+                'percentage': percentage,
+                'date': t.date.isoformat()
+            }
+            
+    results = list(user_best.values())
     # Sort by percentage then by total score
     results.sort(key=lambda x: (x['percentage'], x['score']), reverse=True)
     return jsonify({'leaderboard': results[:50]})
