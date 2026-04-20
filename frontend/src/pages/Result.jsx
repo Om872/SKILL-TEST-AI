@@ -51,75 +51,79 @@ const Result = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto py-8 space-y-8">
-      <div id="report-container" className="space-y-8">
+    <div className="max-w-5xl mx-auto py-8 space-y-8 relative z-10 px-4">
+      {/* Background glow for Result */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-500/10 rounded-full blur-[150px] pointer-events-none mix-blend-screen" />
+
+      <div id="report-container" className="space-y-8 relative z-10">
       {/* Header and Summary */}
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden"
+        className="glass-card rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/20"
       >
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-white text-center">
-          <h1 className="text-4xl font-bold mb-2">Test Completed!</h1>
-          <p className="text-indigo-100 text-lg">
-            {skill.charAt(0).toUpperCase() + skill.slice(1)} • {difficulty} Level
+        <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-10 text-white text-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-white/5 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
+          <h1 className="text-5xl font-black mb-3 tracking-wide drop-shadow-lg relative z-10">Test Completed!</h1>
+          <p className="text-indigo-100/90 text-xl font-medium tracking-wider uppercase relative z-10">
+            {skill.charAt(0).toUpperCase() + skill.slice(1)} <span className="opacity-50 mx-2">•</span> {difficulty} Level
           </p>
         </div>
 
-        <div className="p-8 grid md:grid-cols-2 gap-8 items-center">
-          <div className="flex flex-col items-center justify-center space-y-4">
-            <div className="relative w-48 h-48">
-              <Doughnut data={chartData} options={{ cutout: '75%', plugins: { legend: { display: false } } }} />
+        <div className="p-10 grid md:grid-cols-2 gap-10 items-center bg-white/5 border-t border-white/10">
+          <div className="flex flex-col items-center justify-center space-y-6">
+            <div className="relative w-56 h-56 drop-shadow-[0_0_20px_rgba(99,102,241,0.2)] hover:scale-105 transition-transform duration-500">
+              <Doughnut data={chartData} options={{ cutout: '78%', plugins: { legend: { display: false } } }} />
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className={`text-4xl font-bold ${processScoreColor(percentage)}`}>
+                <span className={`text-5xl font-black drop-shadow-md ${processScoreColor(percentage)}`}>
                   {percentage}%
                 </span>
-                <span className="text-gray-500 dark:text-gray-400 font-medium">Score</span>
+                <span className="text-gray-400 font-bold uppercase tracking-widest text-sm mt-1">Score</span>
               </div>
             </div>
-            <div className="flex space-x-6 w-full justify-center text-sm font-medium">
-              <div className="flex items-center text-green-600 dark:text-green-400">
-                <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+            <div className="flex space-x-8 w-full justify-center text-base font-bold">
+              <div className="flex items-center text-green-400 bg-green-500/10 px-4 py-2 rounded-xl border border-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.1)]">
+                <div className="w-3 h-3 bg-green-400 rounded-full mr-2 shadow-[0_0_8px_rgba(34,197,94,0.8)]"></div>
                 {score} Correct
               </div>
-              <div className="flex items-center text-red-600 dark:text-red-400">
-                <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+              <div className="flex items-center text-red-400 bg-red-500/10 px-4 py-2 rounded-xl border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]">
+                <div className="w-3 h-3 bg-red-400 rounded-full mr-2 shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>
                 {wrongCount} Incorrect
               </div>
             </div>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Performance Analysis</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                {percentage >= 80 ? "Excellent job! You have a strong grasp of the concepts." 
-                 : percentage >= 50 ? "Good effort! Review the incorrect answers to improve." 
-                 : "Keep practicing! Reviewing the fundamentals will help you score better next time."}
+              <h3 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 mb-3 tracking-wide">Performance Analysis</h3>
+              <p className="text-indigo-200 text-lg leading-relaxed">
+                {percentage >= 80 ? "Stunning precision! You have a profound grasp of these concepts." 
+                 : percentage >= 50 ? "Solid foundational effort! Review the incorrect answers below to refine your edge." 
+                 : "Keep leveling up! Reviewing the fundamentals deeply will reconstruct your understanding."}
               </p>
             </div>
             
-            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 print:hidden">
+            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 print:hidden pt-4 border-t border-white/10">
               <button
                 onClick={() => navigate('/')}
-                className="flex items-center justify-center px-6 py-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-xl font-medium hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors"
+                className="flex flex-1 items-center justify-center px-6 py-4 bg-white/5 border border-white/10 text-white rounded-2xl font-bold hover:bg-white/10 hover:border-indigo-400/50 transition-all duration-300 transform hover:-translate-y-1"
               >
-                <RefreshCw className="h-5 w-5 mr-2" />
-                Take Another Test
+                <RefreshCw className="h-5 w-5 mr-2 text-indigo-400" />
+                Retake
               </button>
               <button
                 onClick={() => navigate('/dashboard')}
-                className="flex items-center justify-center px-6 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/30"
+                className="flex flex-1 items-center justify-center px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl font-bold hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] transition-all duration-300 transform hover:-translate-y-1"
               >
-                <LayoutDashboard className="h-5 w-5 mr-2" />
+                <LayoutDashboard className="h-5 w-5 mr-2 drop-shadow-md" />
                 Dashboard
               </button>
               <button
                 onClick={handleExportPDF}
-                className="flex items-center justify-center px-6 py-3 bg-white dark:bg-gray-700 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-600/50 rounded-xl font-medium hover:bg-indigo-50 dark:hover:bg-indigo-800 transition-colors"
+                className="flex flex-1 items-center justify-center px-6 py-4 bg-white/5 border border-white/10 text-white rounded-2xl font-bold hover:bg-white/10 hover:border-indigo-400/50 transition-all duration-300 transform hover:-translate-y-1"
               >
-                <Download className="h-5 w-5 mr-2" />
-                Export PDF
+                <Download className="h-5 w-5 mr-2 text-blue-400" />
+                Export
               </button>
             </div>
           </div>
@@ -128,44 +132,43 @@ const Result = () => {
 
       {/* Detailed Review */}
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8"
+        className="glass-card border border-white/20 rounded-[2.5rem] p-10 shadow-2xl relative z-10"
       >
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
+        <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 mb-8 border-b border-white/10 pb-6 inline-block w-full">
           Detailed Review
         </h2>
-        <div className="space-y-6">
+        <div className="space-y-8">
           {questions.map((q, idx) => {
             const isCorrect = answers[idx] === q.correct_answer;
             return (
               <div 
                 key={idx} 
-                className={`p-6 rounded-2xl border-2 ${isCorrect ? 'border-green-100 dark:border-green-900/30 bg-green-50/50 dark:bg-green-900/10' : 'border-red-100 dark:border-red-900/30 bg-red-50/50 dark:bg-red-900/10'}`}
+                className={`p-8 rounded-[2rem] border-2 transition-all duration-300 hover:shadow-xl ${isCorrect ? 'border-green-500/30 bg-green-500/5' : 'border-red-500/30 bg-red-500/5'}`}
               >
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-5">
                   <div className="mt-1">
                     {isCorrect ? (
-                      <CheckCircle2 className="h-6 w-6 text-green-500" />
+                      <CheckCircle2 className="h-8 w-8 text-green-400 drop-shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
                     ) : (
-                      <XCircle className="h-6 w-6 text-red-500" />
+                      <XCircle className="h-8 w-8 text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.6)]" />
                     )}
                   </div>
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">
+                  <div className="flex-1 w-full">
+                    <h4 className="font-bold text-white mb-6 text-xl leading-relaxed tracking-wide">
                       {idx + 1}. {q.question}
                     </h4>
-                    <div className="grid sm:grid-cols-2 gap-3">
+                    <div className="grid sm:grid-cols-2 gap-4">
                       {q.options.map((opt, oIdx) => {
-                        let btnClass = "px-4 py-3 rounded-xl border text-sm font-medium ";
+                        let btnClass = "px-6 py-4 rounded-xl border-2 text-sm font-semibold tracking-wide transition-all ";
                         if (opt === q.correct_answer) {
-                          btnClass += "bg-green-100 border-green-500 text-green-800 dark:bg-green-900/50 dark:border-green-500 dark:text-green-100";
+                          btnClass += "bg-green-500/20 border-green-500/50 text-green-200 shadow-[0_0_15px_rgba(34,197,94,0.15)]";
                         } else if (opt === answers[idx]) {
-                          // user selected this wrong option
-                          btnClass += "bg-red-100 border-red-500 text-red-800 dark:bg-red-900/50 dark:border-red-500 dark:text-red-100";
+                          btnClass += "bg-red-500/20 border-red-500/50 text-red-200 shadow-[0_0_15px_rgba(239,68,68,0.15)]";
                         } else {
-                          btnClass += "bg-white border-gray-200 text-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 opacity-60";
+                          btnClass += "bg-white/5 border-white/5 text-gray-400 opacity-50";
                         }
                         
                         return (
@@ -176,12 +179,13 @@ const Result = () => {
                       })}
                     </div>
                     {q.explanation && (
-                      <div className="mt-4 p-4 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-800 dark:text-indigo-200 rounded-xl text-sm leading-relaxed border border-indigo-100 dark:border-indigo-800/30">
-                        <span className="font-bold flex items-center mb-1">
-                          <LayoutDashboard className="h-4 w-4 mr-1" />
-                          Explanation:
+                      <div className="mt-6 p-6 bg-indigo-500/10 border border-indigo-500/20 text-indigo-200 rounded-2xl text-[15px] leading-relaxed relative overflow-hidden group">
+                        <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500 drop-shadow-[0_0_10px_rgba(99,102,241,1)]"></div>
+                        <span className="font-bold flex items-center mb-2 tracking-wide text-indigo-300">
+                          <LayoutDashboard className="h-5 w-5 mr-2" />
+                          Explanation
                         </span>
-                        {q.explanation}
+                        <div className="opacity-90">{q.explanation}</div>
                       </div>
                     )}
                   </div>

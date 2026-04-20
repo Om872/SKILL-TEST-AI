@@ -133,35 +133,39 @@ const Quiz = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-8">
+    <div className="max-w-4xl mx-auto py-8 px-4 relative z-10">
+      {/* Decorative Orbs */}
+      <div className="absolute top-0 right-0 w-72 h-72 bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
+      <div className="absolute bottom-0 left-0 w-72 h-72 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
+
       {/* Header Info */}
-      <div className="flex flex-wrap items-center justify-between mb-8 gap-4 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+      <div className="flex flex-wrap items-center justify-between mb-8 gap-4 glass-card p-6 rounded-3xl relative z-10 border-b border-white/10 shadow-2xl">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white capitalize">
+          <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300 capitalize mb-1">
             {skill} Test
           </h1>
-          <span className="inline-block mt-1 px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 text-sm font-medium rounded-full capitalize">
+          <span className="inline-block px-4 py-1.5 bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-sm font-bold tracking-wide rounded-full capitalize shadow-[0_0_10px_rgba(99,102,241,0.2)]">
             {difficulty} Level
           </span>
         </div>
-        <div className="flex items-center space-x-2 text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 px-4 py-2 rounded-xl font-mono font-bold text-xl">
-          <Timer className="h-6 w-6" />
+        <div className="flex items-center space-x-3 text-rose-400 bg-rose-500/10 border border-rose-500/20 px-5 py-3 rounded-2xl font-mono font-bold text-2xl shadow-[0_0_15px_rgba(243,24,96,0.15)]">
+          <Timer className="h-7 w-7 drop-shadow-[0_0_8px_currentColor]" />
           <span>{formatTime(timeLeft)}</span>
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div className="mb-8">
-        <div className="flex justify-between text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+      <div className="mb-10 relative z-10">
+        <div className="flex justify-between text-sm font-bold tracking-wider uppercase text-gray-400 mb-3">
           <span>Question {currentIdx + 1} of {questions.length}</span>
-          <span>{Math.round(progress)}% Completed</span>
+          <span className="text-indigo-300">{Math.round(progress)}% Completed</span>
         </div>
-        <div className="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+        <div className="w-full h-4 bg-white/5 border border-white/10 rounded-full overflow-hidden shadow-inner">
           <motion.div 
-            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500"
+            className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-[0_0_15px_rgba(168,85,247,0.5)]"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.5, type: 'spring' }}
           />
         </div>
       </div>
@@ -172,10 +176,10 @@ const Quiz = () => {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.3 }}
-        className="block bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 p-8"
+        transition={{ duration: 0.4 }}
+        className="block glass-card rounded-[2rem] shadow-2xl p-8 md:p-12 relative z-10 border-t border-white/20"
       >
-        <h2 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white mb-8 leading-relaxed">
+        <h2 className="text-2xl md:text-3xl font-bold text-white mb-10 leading-relaxed tracking-wide drop-shadow-md">
           {currentQuestion?.question}
         </h2>
 
@@ -184,29 +188,32 @@ const Quiz = () => {
             <button
               key={idx}
               onClick={() => setSelectedAnswer(option)}
-              className={`w-full text-left px-6 py-4 rounded-2xl border-2 transition-all duration-200 flex items-center justify-between group
+              className={`w-full text-left px-8 py-5 rounded-2xl border-2 transition-all duration-300 flex items-center justify-between group overflow-hidden relative
                 ${selectedAnswer === option 
-                  ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-500/10' 
-                  : 'border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-700 bg-transparent'}`}
+                  ? 'border-indigo-500 bg-indigo-500/20 shadow-[0_0_20px_rgba(99,102,241,0.3)] transform scale-[1.02]' 
+                  : 'border-white/10 bg-white/5 hover:border-indigo-400/50 hover:bg-white/10'}`}
             >
-              <span className={`text-lg ${selectedAnswer === option ? 'text-indigo-900 dark:text-indigo-100 font-medium' : 'text-gray-700 dark:text-gray-300'}`}>
+              <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <span className={`relative z-10 text-xl font-medium tracking-wide ${selectedAnswer === option ? 'text-white' : 'text-gray-300'}`}>
                 {option}
               </span>
               {selectedAnswer === option && (
-                <CheckCircle2 className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="relative z-10">
+                  <CheckCircle2 className="h-7 w-7 text-indigo-400 drop-shadow-[0_0_8px_currentColor]" />
+                </motion.div>
               )}
             </button>
           ))}
         </div>
 
-        <div className="mt-10 flex justify-between">
+        <div className="mt-12 flex justify-between pt-8 border-t border-white/10">
           <button
             onClick={handlePrevious}
             disabled={currentIdx === 0}
-            className={`flex items-center space-x-2 px-8 py-3 rounded-xl font-bold text-lg transition-all
+            className={`flex items-center space-x-2 px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300
               ${currentIdx > 0 
-                ? 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white transform hover:-translate-x-1' 
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed opacity-50'}`}
+                ? 'bg-white/10 hover:bg-white/20 text-white border border-white/10 hover:border-white/20 transform hover:-translate-x-1' 
+                : 'bg-black/20 text-gray-600 cursor-not-allowed opacity-50 border border-transparent'}`}
           >
             <span>Previous</span>
           </button>
@@ -214,13 +221,13 @@ const Quiz = () => {
           <button
             onClick={handleNext}
             disabled={!selectedAnswer}
-            className={`flex items-center space-x-2 px-8 py-3 rounded-xl font-bold text-lg transition-all
+            className={`flex items-center space-x-3 px-10 py-4 rounded-xl font-bold text-lg transition-all duration-300
               ${selectedAnswer 
-                ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/30 transform hover:translate-x-1' 
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'}`}
+                ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-[0_0_25px_rgba(99,102,241,0.4)] hover:shadow-[0_0_40px_rgba(168,85,247,0.6)] transform hover:translate-x-1' 
+                : 'bg-white/5 border border-white/10 text-gray-500 cursor-not-allowed border border-transparent'}`}
           >
             <span>{currentIdx === questions.length - 1 ? 'Submit Test' : 'Next'}</span>
-            <ChevronRight className="h-5 w-5" />
+            <ChevronRight className="h-6 w-6" />
           </button>
         </div>
       </motion.div>

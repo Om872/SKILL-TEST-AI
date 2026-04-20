@@ -12,7 +12,7 @@ import Leaderboard from './pages/Leaderboard';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex flex-col font-sans transition-colors duration-300">
+      <div className="dark min-h-screen premium-bg text-gray-100 flex flex-col font-sans selection:bg-indigo-500/30">
         <Navbar />
         <main className="flex-grow container mx-auto px-4 py-8 max-w-7xl">
           <Routes>

@@ -12,14 +12,14 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="print:hidden bg-white/80 dark:bg-gray-900/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="print:hidden mt-4 mx-4 sm:mx-8 lg:mx-auto max-w-7xl glass-pill sticky top-4 z-50 rounded-2xl shadow-2xl transition-all duration-300">
+      <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link to="/" className="flex items-center space-x-2 group">
-            <div className="p-2 bg-indigo-600 rounded-lg group-hover:scale-105 transition-transform">
+          <Link to="/" className="flex items-center space-x-3 group">
+            <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl group-hover:scale-110 shadow-lg shadow-indigo-500/30 transition-all duration-300">
               <BrainCircuit className="h-6 w-6 text-white" />
             </div>
-            <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="font-extrabold text-2xl tracking-tight text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-indigo-400 group-hover:to-purple-400 transition-all duration-300">
               SkillTest AI
             </span>
           </Link>
@@ -29,31 +29,31 @@ const Navbar = () => {
               <>
                 <Link
                   to="/dashboard"
-                  className="flex items-center space-x-1 text-gray-600 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 font-medium transition-colors"
+                  className="flex items-center space-x-1 text-gray-300 hover:text-white hover:text-shadow-glow font-medium transition-all duration-300 transform hover:-translate-y-0.5"
                 >
-                  <Activity className="h-5 w-5" />
+                  <Activity className="h-5 w-5 text-indigo-400" />
                   <span className="hidden sm:inline">Dashboard</span>
                 </Link>
-                <div className="h-5 w-px bg-gray-300 dark:bg-gray-700"></div>
+                <div className="h-4 w-px bg-white/10"></div>
                 <Link
                   to="/profile"
-                  className="flex items-center space-x-1 text-gray-600 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 font-medium transition-colors"
+                  className="flex items-center space-x-1 text-gray-300 hover:text-white hover:text-shadow-glow font-medium transition-all duration-300 transform hover:-translate-y-0.5"
                 >
-                  <User className="h-5 w-5" />
+                  <User className="h-5 w-5 text-purple-400" />
                   <span className="hidden sm:inline">Profile</span>
                 </Link>
-                <div className="h-5 w-px bg-gray-300 dark:bg-gray-700"></div>
+                <div className="h-4 w-px bg-white/10"></div>
                 <Link
                   to="/leaderboard"
-                  className="flex items-center space-x-1 text-gray-600 hover:text-amber-500 dark:text-gray-300 dark:hover:text-amber-400 font-medium transition-colors"
+                  className="flex items-center space-x-1 text-gray-300 hover:text-white hover:text-shadow-glow font-medium transition-all duration-300 transform hover:-translate-y-0.5"
                 >
-                  <Trophy className="h-5 w-5" />
+                  <Trophy className="h-5 w-5 text-amber-400" />
                   <span className="hidden sm:inline">Top Ranks</span>
                 </Link>
-                <div className="h-5 w-px bg-gray-300 dark:bg-gray-700"></div>
+                <div className="h-4 w-px bg-white/10"></div>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center space-x-1 text-gray-600 hover:text-red-600 dark:text-gray-300 dark:hover:text-red-400 font-medium transition-colors"
+                  className="flex items-center space-x-1 text-gray-300 hover:text-red-400 hover:text-shadow-glow font-medium transition-all duration-300 transform hover:-translate-y-0.5"
                 >
                   <LogOut className="h-5 w-5" />
                   <span className="hidden sm:inline">Logout</span>
@@ -63,13 +63,13 @@ const Navbar = () => {
               <>
                 <Link
                   to="/login"
-                  className="text-gray-600 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 font-medium transition-colors"
+                  className="text-gray-300 hover:text-white font-medium transition-all duration-300 px-4 py-2 hover:bg-white/5 rounded-lg"
                 >
                   Log in
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm shadow-indigo-600/30"
+                  className="relative overflow-hidden bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md text-white px-6 py-2 rounded-xl font-medium transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transform hover:-translate-y-0.5"
                 >
                   Sign up
                 </Link>

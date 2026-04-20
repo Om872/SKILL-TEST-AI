@@ -17,8 +17,14 @@ app = Flask(__name__)
 CORS(app)
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'super-secret-key-for-jwt')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///skilltest.db')
+
+db_url = os.getenv('DATABASE_URL', 'sqlite:///skilltest.db')
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['BCRYPT_LOG_ROUNDS'] = 10  # Optimize password hashing speed
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
@@ -51,54 +57,54 @@ with app.app_context():
 
 FALLBACK_QUESTIONS = {
     "python": [
-        {"question": "What is the output of `print(type([]))`?", "options": ["<class 'list'>", "<class 'array'>", "<class 'tuple'>", "<class 'dict'>"], "correct_answer": "<class 'list'>"},
-        {"question": "Which keyword is used to define a function in Python?", "options": ["func", "def", "function", "define"], "correct_answer": "def"},
-        {"question": "What does `len('hello')` return?", "options": ["4", "5", "6", "Error"], "correct_answer": "5"},
-        {"question": "Which of the following is immutable in Python?", "options": ["list", "dict", "tuple", "set"], "correct_answer": "tuple"},
-        {"question": "What is the correct way to create a dictionary in Python?", "options": ["d = []", "d = ()", "d = {}", "d = <> "], "correct_answer": "d = {}"},
-        {"question": "What does `range(5)` produce?", "options": ["[1,2,3,4,5]", "[0,1,2,3,4]", "[0,1,2,3,4,5]", "[1,2,3,4]"], "correct_answer": "[0,1,2,3,4]"},
-        {"question": "Which method removes the last element from a list?", "options": ["remove()", "pop()", "delete()", "discard()"], "correct_answer": "pop()"},
-        {"question": "What is a lambda function in Python?", "options": ["A named function", "An anonymous function", "A built-in function", "A recursive function"], "correct_answer": "An anonymous function"},
-        {"question": "What symbol is used for single-line comments in Python?", "options": ["//", "#", "/* */", "--"], "correct_answer": "#"},
-        {"question": "Which built-in function returns the largest item?", "options": ["largest()", "max()", "top()", "high()"], "correct_answer": "max()"},
-        {"question": "What does `'abc'.upper()` return?", "options": ["abc", "ABC", "Abc", "Error"], "correct_answer": "ABC"},
-        {"question": "What is PEP 8 in Python?", "options": ["A Python version", "A style guide", "A package manager", "A testing framework"], "correct_answer": "A style guide"},
+        {"question": "What is the output of `print(type([]))`?", "options": ["<class 'list'>", "<class 'array'>", "<class 'tuple'>", "<class 'dict'>"], "correct_answer": "<class 'list'>", "explanation": "In Python, [] represents a list literal, so type() returns the class 'list'."},
+        {"question": "Which keyword is used to define a function in Python?", "options": ["func", "def", "function", "define"], "correct_answer": "def", "explanation": "Python uses the 'def' keyword to start defining a function."},
+        {"question": "What does `len('hello')` return?", "options": ["4", "5", "6", "Error"], "correct_answer": "5", "explanation": "The len() function returns the number of characters in a string; 'hello' has 5 letters."},
+        {"question": "Which of the following is immutable in Python?", "options": ["list", "dict", "tuple", "set"], "correct_answer": "tuple", "explanation": "Tuples cannot be modified after they are created, making them immutable."},
+        {"question": "What is the correct way to create a dictionary in Python?", "options": ["d = []", "d = ()", "d = {}", "d = <> "], "correct_answer": "d = {}", "explanation": "Curly braces {} are used to initialize empty dictionaries (and sets) in Python."},
+        {"question": "What does `range(5)` produce?", "options": ["[1,2,3,4,5]", "[0,1,2,3,4]", "[0,1,2,3,4,5]", "[1,2,3,4]"], "correct_answer": "[0,1,2,3,4]", "explanation": "range(N) generates numbers from 0 up to N-1."},
+        {"question": "Which method removes the last element from a list?", "options": ["remove()", "pop()", "delete()", "discard()"], "correct_answer": "pop()", "explanation": "The pop() method removes and returns the last element of a list when called without arguments."},
+        {"question": "What is a lambda function in Python?", "options": ["A named function", "An anonymous function", "A built-in function", "A recursive function"], "correct_answer": "An anonymous function", "explanation": "Lambda functions are small, anonymous inline functions defined using the 'lambda' keyword."},
+        {"question": "What symbol is used for single-line comments in Python?", "options": ["//", "#", "/* */", "--"], "correct_answer": "#", "explanation": "Python ignores all text from the '#' symbol to the end of the line."},
+        {"question": "Which built-in function returns the largest item?", "options": ["largest()", "max()", "top()", "high()"], "correct_answer": "max()", "explanation": "The built-in max() function evaluates variables and returns the highest value."},
+        {"question": "What does `'abc'.upper()` return?", "options": ["abc", "ABC", "Abc", "Error"], "correct_answer": "ABC", "explanation": "The upper() string method converts all lowercase letters to uppercase."},
+        {"question": "What is PEP 8 in Python?", "options": ["A Python version", "A style guide", "A package manager", "A testing framework"], "correct_answer": "A style guide", "explanation": "PEP 8 is the official style guide for writing readable, idiomatic Python code."},
     ],
     "java": [
-        {"question": "Which keyword is used to inherit a class in Java?", "options": ["implements", "extends", "inherits", "super"], "correct_answer": "extends"},
-        {"question": "What is the default value of an int variable in Java?", "options": ["null", "0", "1", "undefined"], "correct_answer": "0"},
-        {"question": "Which method is the entry point of a Java program?", "options": ["start()", "run()", "main()", "init()"], "correct_answer": "main()"},
-        {"question": "What does JVM stand for?", "options": ["Java Virtual Machine", "Java Variable Method", "Java Version Manager", "Java Verified Module"], "correct_answer": "Java Virtual Machine"},
-        {"question": "Which of the following is not a Java primitive type?", "options": ["int", "boolean", "String", "char"], "correct_answer": "String"},
-        {"question": "What is the size of an int in Java?", "options": ["8 bits", "16 bits", "32 bits", "64 bits"], "correct_answer": "32 bits"},
-        {"question": "Which access modifier makes a member accessible only within its class?", "options": ["public", "protected", "private", "default"], "correct_answer": "private"},
-        {"question": "What does the `final` keyword do to a variable?", "options": ["Makes it null", "Makes it constant", "Makes it global", "Makes it static"], "correct_answer": "Makes it constant"},
-        {"question": "Which interface must be implemented to use ArrayList?", "options": ["List", "Collection", "Iterable", "No interface needed"], "correct_answer": "No interface needed"},
-        {"question": "What is autoboxing in Java?", "options": ["Converting Object to primitive", "Converting primitive to Object", "Casting int to float", "Importing packages"], "correct_answer": "Converting primitive to Object"},
+        {"question": "Which keyword is used to inherit a class in Java?", "options": ["implements", "extends", "inherits", "super"], "correct_answer": "extends", "explanation": "The 'extends' keyword establishes inheritance between a subclass and a superclass."},
+        {"question": "What is the default value of an int variable in Java?", "options": ["null", "0", "1", "undefined"], "correct_answer": "0", "explanation": "Instance variables of type int are initialized to 0 by default."},
+        {"question": "Which method is the entry point of a Java program?", "options": ["start()", "run()", "main()", "init()"], "correct_answer": "main()", "explanation": "The JVM looks for the public static void main(String[] args) method to begin execution."},
+        {"question": "What does JVM stand for?", "options": ["Java Virtual Machine", "Java Variable Method", "Java Version Manager", "Java Verified Module"], "correct_answer": "Java Virtual Machine", "explanation": "JVM represents Java Virtual Machine, the runtime engine that executes Java bytecode."},
+        {"question": "Which of the following is not a Java primitive type?", "options": ["int", "boolean", "String", "char"], "correct_answer": "String", "explanation": "String is not a primitive; it is a full object class in Java."},
+        {"question": "What is the size of an int in Java?", "options": ["8 bits", "16 bits", "32 bits", "64 bits"], "correct_answer": "32 bits", "explanation": "In Java, an int is a 32-bit signed two's complement integer."},
+        {"question": "Which access modifier makes a member accessible only within its class?", "options": ["public", "protected", "private", "default"], "correct_answer": "private", "explanation": "The 'private' modifier restricts visibility strictly to the defining class itself."},
+        {"question": "What does the `final` keyword do to a variable?", "options": ["Makes it null", "Makes it constant", "Makes it global", "Makes it static"], "correct_answer": "Makes it constant", "explanation": "Variables marked as final cannot be reassigned once initialized."},
+        {"question": "Which interface must be implemented to use ArrayList?", "options": ["List", "Collection", "Iterable", "No interface needed"], "correct_answer": "No interface needed", "explanation": "An ArrayList can be instantiated directly; it implements List internally but YOU don't need to implement it."},
+        {"question": "What is autoboxing in Java?", "options": ["Converting Object to primitive", "Converting primitive to Object", "Casting int to float", "Importing packages"], "correct_answer": "Converting primitive to Object", "explanation": "Autoboxing securely packages primitive types (like int) into wrapper classes (like Integer) automatically."},
     ],
     "react": [
-        {"question": "What hook is used to manage state in a functional component?", "options": ["useEffect", "useState", "useContext", "useRef"], "correct_answer": "useState"},
-        {"question": "What does JSX stand for?", "options": ["JavaScript XML", "Java Syntax Extension", "JavaScript Extension", "Java XML"], "correct_answer": "JavaScript XML"},
-        {"question": "Which method triggers a re-render in React?", "options": ["forceUpdate()", "setState()", "render()", "update()"], "correct_answer": "setState()"},
-        {"question": "What is the Virtual DOM?", "options": ["A copy of the real DOM in memory", "A CSS framework", "A JavaScript engine", "A browser API"], "correct_answer": "A copy of the real DOM in memory"},
-        {"question": "Which hook runs after every render by default?", "options": ["useState", "useRef", "useEffect", "useMemo"], "correct_answer": "useEffect"},
-        {"question": "What is a React key used for?", "options": ["Styling", "Uniquely identifying list items", "Event handling", "State management"], "correct_answer": "Uniquely identifying list items"},
-        {"question": "What is the correct way to pass data to a child component?", "options": ["Using state", "Using props", "Using context only", "Using ref"], "correct_answer": "Using props"},
-        {"question": "Which library is commonly used for routing in React?", "options": ["react-nav", "react-router-dom", "react-link", "router-react"], "correct_answer": "react-router-dom"},
-        {"question": "What does `useContext` do?", "options": ["Manages local state", "Subscribes to context", "Handles side effects", "Creates refs"], "correct_answer": "Subscribes to context"},
-        {"question": "What is a controlled component?", "options": ["Component with no state", "Component whose form data is controlled by React state", "Component with context", "Component using refs"], "correct_answer": "Component whose form data is controlled by React state"},
+        {"question": "What hook is used to manage state in a functional component?", "options": ["useEffect", "useState", "useContext", "useRef"], "correct_answer": "useState", "explanation": "useState allows functional components to maintain and update local state."},
+        {"question": "What does JSX stand for?", "options": ["JavaScript XML", "Java Syntax Extension", "JavaScript Extension", "Java XML"], "correct_answer": "JavaScript XML", "explanation": "JSX is an syntax extension for JavaScript that looks similar to XML/HTML."},
+        {"question": "Which method triggers a re-render in React?", "options": ["forceUpdate()", "setState()", "render()", "update()"], "correct_answer": "setState()", "explanation": "Calling setState() schedules an update to a component's state object and tells React to re-render."},
+        {"question": "What is the Virtual DOM?", "options": ["A copy of the real DOM in memory", "A CSS framework", "A JavaScript engine", "A browser API"], "correct_answer": "A copy of the real DOM in memory", "explanation": "React acts on a lightweight copy of the DOM (Virtual DOM) and syncs diffs with the real DOM."},
+        {"question": "Which hook runs after every render by default?", "options": ["useState", "useRef", "useEffect", "useMemo"], "correct_answer": "useEffect", "explanation": "useEffect lets you perform side effects in function components, firing after renders."},
+        {"question": "What is a React key used for?", "options": ["Styling", "Uniquely identifying list items", "Event handling", "State management"], "correct_answer": "Uniquely identifying list items", "explanation": "Keys help React identify which items have changed, are added, or are removed from lists."},
+        {"question": "What is the correct way to pass data to a child component?", "options": ["Using state", "Using props", "Using context only", "Using ref"], "correct_answer": "Using props", "explanation": "Props are the primary mechanism for passing read-only data from parent to child components."},
+        {"question": "Which library is commonly used for routing in React?", "options": ["react-nav", "react-router-dom", "react-link", "router-react"], "correct_answer": "react-router-dom", "explanation": "React Router DOM is the standard library for client-side routing in web React apps."},
+        {"question": "What does `useContext` do?", "options": ["Manages local state", "Subscribes to context", "Handles side effects", "Creates refs"], "correct_answer": "Subscribes to context", "explanation": "useContext subscribes a component to a Context, retrieving its current global value."},
+        {"question": "What is a controlled component?", "options": ["Component with no state", "Component whose form data is controlled by React state", "Component with context", "Component using refs"], "correct_answer": "Component whose form data is controlled by React state", "explanation": "A controlled component derives its input values strictly from React's state rather than the DOM."},
     ],
     "data-science": [
-        {"question": "What does pandas library primarily deal with?", "options": ["Machine Learning", "Data manipulation and analysis", "Web scraping", "Visualization only"], "correct_answer": "Data manipulation and analysis"},
-        {"question": "Which algorithm is used for classification and regression?", "options": ["K-Means", "PCA", "Random Forest", "DBSCAN"], "correct_answer": "Random Forest"},
-        {"question": "What does NaN stand for in data science?", "options": ["Not a Node", "Not a Number", "Null and None", "Numeric and Non-numeric"], "correct_answer": "Not a Number"},
-        {"question": "Which library is used for data visualization in Python?", "options": ["NumPy", "Pandas", "Matplotlib", "Scikit-learn"], "correct_answer": "Matplotlib"},
-        {"question": "What is overfitting in machine learning?", "options": ["Model performs poorly on training data", "Model performs well on training but poorly on new data", "Model is too simple", "Model has too few parameters"], "correct_answer": "Model performs well on training but poorly on new data"},
-        {"question": "What does PCA stand for?", "options": ["Principal Component Analysis", "Primary Cluster Algorithm", "Predictive Component Array", "Parametric Correlation Analysis"], "correct_answer": "Principal Component Analysis"},
-        {"question": "What is a confusion matrix used for?", "options": ["Feature selection", "Evaluating classification model performance", "Data normalization", "Clustering"], "correct_answer": "Evaluating classification model performance"},
-        {"question": "Which measure represents the middle value of a dataset?", "options": ["Mean", "Mode", "Median", "Range"], "correct_answer": "Median"},
-        {"question": "What is the purpose of train-test split?", "options": ["To clean data", "To evaluate model on unseen data", "To normalize features", "To remove outliers"], "correct_answer": "To evaluate model on unseen data"},
-        {"question": "Which Python library is used for machine learning?", "options": ["Flask", "Django", "Scikit-learn", "SQLAlchemy"], "correct_answer": "Scikit-learn"},
+        {"question": "What does pandas library primarily deal with?", "options": ["Machine Learning", "Data manipulation and analysis", "Web scraping", "Visualization only"], "correct_answer": "Data manipulation and analysis", "explanation": "Pandas provides DataFrames and utilities specifically designed for powerful data analysis."},
+        {"question": "Which algorithm is used for classification and regression?", "options": ["K-Means", "PCA", "Random Forest", "DBSCAN"], "correct_answer": "Random Forest", "explanation": "Random Forest is an ensemble learning method that can be adapted for both classification and regression tasks."},
+        {"question": "What does NaN stand for in data science?", "options": ["Not a Node", "Not a Number", "Null and None", "Numeric and Non-numeric"], "correct_answer": "Not a Number", "explanation": "NaN typically represents missing or unrepresentable numerical data points."},
+        {"question": "Which library is used for data visualization in Python?", "options": ["NumPy", "Pandas", "Matplotlib", "Scikit-learn"], "correct_answer": "Matplotlib", "explanation": "Matplotlib is the foundational plotting library in Python used for static, animated, and interactive visualizations."},
+        {"question": "What is overfitting in machine learning?", "options": ["Model performs poorly on training data", "Model performs well on training but poorly on new data", "Model is too simple", "Model has too few parameters"], "correct_answer": "Model performs well on training but poorly on new data", "explanation": "Overfitting happens when a model memorizes the training data noise instead of the general pattern."},
+        {"question": "What does PCA stand for?", "options": ["Principal Component Analysis", "Primary Cluster Algorithm", "Predictive Component Array", "Parametric Correlation Analysis"], "correct_answer": "Principal Component Analysis", "explanation": "PCA is a dimensionality reduction technique used to distill complex data down to core components."},
+        {"question": "What is a confusion matrix used for?", "options": ["Feature selection", "Evaluating classification model performance", "Data normalization", "Clustering"], "correct_answer": "Evaluating classification model performance", "explanation": "It compares actual values with predicted values to show true/false positives and negatives."},
+        {"question": "Which measure represents the middle value of a dataset?", "options": ["Mean", "Mode", "Median", "Range"], "correct_answer": "Median", "explanation": "The median divides your data exactly in half, making it resilient to massive outliers."},
+        {"question": "What is the purpose of train-test split?", "options": ["To clean data", "To evaluate model on unseen data", "To normalize features", "To remove outliers"], "correct_answer": "To evaluate model on unseen data", "explanation": "Testing on a hold-out test set verifies that the model generalizes to new data rather than just memorizing."},
+        {"question": "Which Python library is used for machine learning?", "options": ["Flask", "Django", "Scikit-learn", "SQLAlchemy"], "correct_answer": "Scikit-learn", "explanation": "Scikit-learn features numerous algorithms for classical machine learning inside Python."},
     ],
 }
 
