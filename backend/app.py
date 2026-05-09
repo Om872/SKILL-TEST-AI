@@ -21,6 +21,23 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'super-secret-key-for-jwt')
 db_url = os.getenv('DATABASE_URL', 'sqlite:///skilltest.db')
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+# Test remote DB connectivity before committing to it
+if db_url.startswith("postgresql://"):
+    try:
+        import socket
+        from urllib.parse import urlparse
+        parsed = urlparse(db_url)
+        host = parsed.hostname
+        port = parsed.port or 5432
+        sock = socket.create_connection((host, port), timeout=5)
+        sock.close()
+        print(f"[OK] Remote database reachable at {host}:{port}")
+    except Exception as e:
+        print(f"[WARN] Remote database unreachable: {e}")
+        print("[INFO] Falling back to local SQLite database...")
+        db_url = 'sqlite:///skilltest.db'
+
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -39,6 +56,9 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
+    def __init__(self, name: str, email: str, password: str, **kwargs) -> None:
+        super().__init__(name=name, email=email, password=password, **kwargs)
+
 class Test(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -48,8 +68,12 @@ class Test(db.Model):
     total_questions = db.Column(db.Integer, nullable=False)
     date = db.Column(db.DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
 
+    def __init__(self, user_id: int, skill: str, difficulty: str, score: int, total_questions: int, **kwargs) -> None:
+        super().__init__(user_id=user_id, skill=skill, difficulty=difficulty, score=score, total_questions=total_questions, **kwargs)
+
 with app.app_context():
     db.create_all()
+    print("[OK] Database tables ready")
 
 # ─────────────────────────────────────────────
 # FALLBACK QUESTION BANK (used if AI fails)
@@ -240,19 +264,19 @@ Example: [{{"question":"...","options":["A","B","C","D"],"correct_answer":"A","e
                                 pass
                     
                     if questions and isinstance(questions, list) and len(questions) >= 5:
-                        print(f"✅ AI questions generated using: {model}")
+                        print(f"[OK] AI questions generated using: {model}")
                         return jsonify({'questions': questions[:10], 'source': 'ai', 'model': model})
-                    print(f"⚠️ {model}: unparseable response, trying next...")
+                    print(f"[WARN] {model}: unparseable response, trying next...")
                 else:
-                    print(f"⚠️ {model}: HTTP {response.status_code}, trying next...")
+                    print(f"[WARN] {model}: HTTP {response.status_code}, trying next...")
             except Exception as e:
-                print(f"⚠️ {model}: {str(e)}, trying next...")
+                print(f"[WARN] {model}: {str(e)}, trying next...")
 
-        print("⚠️ All AI models failed — using fallback question bank")
+        print("[WARN] All AI models failed - using fallback question bank")
 
     # Always fallback to built-in questions
     questions = get_fallback_questions(skill)
-    print(f"📚 Serving fallback questions for: {skill}")
+    print(f"[INFO] Serving fallback questions for: {skill}")
     return jsonify({'questions': questions, 'source': 'fallback'})
 
 # ─────────────────────────────────────────────
